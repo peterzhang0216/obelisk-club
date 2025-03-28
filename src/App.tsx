@@ -1,13 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from './components/ui/card'
 import { Button } from './components/ui/button'
 import { Input } from './components/ui/input'
-import { Search, Github, ExternalLink, Bookmark } from 'lucide-react'
+import { Search, Github, ExternalLink, Bookmark, Newspaper } from 'lucide-react'
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('')
+  const [phNews, setPhNews] = useState<Array<{
+    id: number;
+    title: string;
+    description: string;
+    url: string;
+    author: string;
+    publishDate: string;
+  }>>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   
   const openSourceTools = [
     {
@@ -249,6 +259,159 @@ function App() {
     project.description.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  const filteredPhNews = phNews.filter(news => 
+    news.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    news.description.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  useEffect(() => {
+    const fetchPhNews = async () => {
+      setLoading(true)
+      try {
+        const mockNewsItems = [
+          {
+            id: 1,
+            title: "Devin AI - 首个AI软件工程师",
+            description: "Devin是世界上第一个完全自主的AI软件工程师，能够独立完成复杂的编程任务。",
+            url: "https://www.producthunt.com/posts/devin-ai",
+            author: "Cognition Labs",
+            publishDate: "2025-03-20"
+          },
+          {
+            id: 2,
+            title: "Claude 3 - 最新一代AI助手",
+            description: "Anthropic推出的Claude 3系列模型，包括Opus、Sonnet和Haiku三个版本，提供更强大的理解能力。",
+            url: "https://www.producthunt.com/posts/claude-3",
+            author: "Anthropic",
+            publishDate: "2025-03-15"
+          },
+          {
+            id: 3,
+            title: "Midjourney V6 - 革命性图像生成",
+            description: "Midjourney最新版本带来更逼真的图像生成能力，支持更复杂的提示词和风格控制。",
+            url: "https://www.producthunt.com/posts/midjourney-v6",
+            author: "Midjourney",
+            publishDate: "2025-03-10"
+          },
+          {
+            id: 4,
+            title: "Sora - OpenAI的文本生成视频模型",
+            description: "OpenAI推出的Sora能够根据文本描述生成高质量、逼真的视频内容。",
+            url: "https://www.producthunt.com/posts/sora-by-openai",
+            author: "OpenAI",
+            publishDate: "2025-03-05"
+          },
+          {
+            id: 5,
+            title: "GPT-5 - 下一代大型语言模型",
+            description: "OpenAI的GPT-5模型带来更强大的推理能力和更广泛的知识库。",
+            url: "https://www.producthunt.com/posts/gpt-5",
+            author: "OpenAI",
+            publishDate: "2025-02-28"
+          },
+          {
+            id: 6,
+            title: "Perplexity AI - 知识搜索引擎",
+            description: "Perplexity AI结合了搜索引擎和大型语言模型的能力，提供更精确的信息检索体验。",
+            url: "https://www.producthunt.com/posts/perplexity-ai-2",
+            author: "Perplexity",
+            publishDate: "2025-02-25"
+          },
+          {
+            id: 7,
+            title: "Runway Gen-3 - 创意视频生成",
+            description: "Runway的最新一代AI视频生成工具，支持更长时间、更高质量的视频创作。",
+            url: "https://www.producthunt.com/posts/runway-gen-3",
+            author: "Runway",
+            publishDate: "2025-02-20"
+          },
+          {
+            id: 8,
+            title: "Gemini Pro - Google的多模态AI",
+            description: "Google的Gemini Pro模型支持文本、图像、音频和视频的多模态理解和生成。",
+            url: "https://www.producthunt.com/posts/gemini-pro",
+            author: "Google",
+            publishDate: "2025-02-15"
+          },
+          {
+            id: 9,
+            title: "Notion AI - 智能写作助手",
+            description: "Notion集成的AI助手，帮助用户更高效地创建和编辑内容。",
+            url: "https://www.producthunt.com/posts/notion-ai-2",
+            author: "Notion",
+            publishDate: "2025-02-10"
+          },
+          {
+            id: 10,
+            title: "Figma AI - 设计智能助手",
+            description: "Figma推出的AI设计助手，能够根据文本描述生成UI组件和完整设计。",
+            url: "https://www.producthunt.com/posts/figma-ai",
+            author: "Figma",
+            publishDate: "2025-02-05"
+          },
+          {
+            id: 11,
+            title: "Stable Diffusion 3 - 开源图像生成",
+            description: "Stability AI推出的最新一代开源图像生成模型，提供更高质量的图像输出。",
+            url: "https://www.producthunt.com/posts/stable-diffusion-3",
+            author: "Stability AI",
+            publishDate: "2025-01-30"
+          },
+          {
+            id: 12,
+            title: "Whisper V3 - 高精度语音识别",
+            description: "OpenAI的Whisper V3提供更准确的多语言语音识别和转录能力。",
+            url: "https://www.producthunt.com/posts/whisper-v3",
+            author: "OpenAI",
+            publishDate: "2025-01-25"
+          },
+          {
+            id: 13,
+            title: "Copilot Pro - 高级AI编程助手",
+            description: "GitHub和OpenAI合作推出的高级编程助手，支持更多编程语言和更复杂的代码生成。",
+            url: "https://www.producthunt.com/posts/github-copilot-pro",
+            author: "GitHub",
+            publishDate: "2025-01-20"
+          },
+          {
+            id: 14,
+            title: "Luma AI - 3D内容生成",
+            description: "Luma AI能够从2D图像生成高质量的3D模型和场景。",
+            url: "https://www.producthunt.com/posts/luma-ai-2",
+            author: "Luma AI",
+            publishDate: "2025-01-15"
+          },
+          {
+            id: 15,
+            title: "Eleven Labs V3 - 逼真语音合成",
+            description: "Eleven Labs的最新语音合成技术，提供更自然、更情感化的AI语音。",
+            url: "https://www.producthunt.com/posts/eleven-labs-v3",
+            author: "Eleven Labs",
+            publishDate: "2025-01-10"
+          },
+          {
+            id: 16,
+            title: "Hugging Face Pro - AI模型开发平台",
+            description: "Hugging Face推出的专业版平台，为AI开发者提供更强大的模型训练和部署工具。",
+            url: "https://www.producthunt.com/posts/hugging-face-pro",
+            author: "Hugging Face",
+            publishDate: "2025-01-05"
+          }
+        ];
+        
+        setPhNews(mockNewsItems);
+        setError(''); // 清除任何之前的错误
+      } catch (err) {
+        console.error('获取Product Hunt新闻失败:', err)
+        setError('无法加载Product Hunt新闻，请稍后再试')
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchPhNews()
+  }, [])// 只在组件挂载时运行一次
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -276,9 +439,10 @@ function App() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="opensource" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="opensource">开源工具</TabsTrigger>
             <TabsTrigger value="ai">AI 项目</TabsTrigger>
+            <TabsTrigger value="phnews">PH 每日新闻</TabsTrigger>
           </TabsList>
           
           {/* Open Source Tools Tab */}
@@ -341,6 +505,49 @@ function App() {
             {filteredAiProjects.length === 0 && (
               <div className="text-center py-10">
                 <p className="text-gray-500">没有找到匹配的AI项目</p>
+              </div>
+            )}
+          </TabsContent>
+          
+          {/* Product Hunt News Tab */}
+          <TabsContent value="phnews" className="space-y-4">
+            {loading ? (
+              <div className="text-center py-10">
+                <p className="text-gray-500">加载中...</p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-10">
+                <p className="text-red-500">{error}</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredPhNews.map(news => (
+                  <Card key={news.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex justify-between items-center">
+                        <span>{news.title}</span>
+                        <span className="text-sm font-normal text-gray-500 flex items-center">
+                          <Newspaper className="h-4 w-4 mr-1" />
+                          {news.publishDate}
+                        </span>
+                      </CardTitle>
+                      <CardDescription>{news.description}</CardDescription>
+                    </CardHeader>
+                    <CardFooter className="pt-2 flex justify-between">
+                      <span className="text-xs text-gray-500">作者: {news.author}</span>
+                      <Button variant="outline" size="sm" asChild>
+                        <a href={news.url} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                          访问 <ExternalLink className="ml-1 h-3 w-3" />
+                        </a>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            )}
+            {!loading && !error && filteredPhNews.length === 0 && (
+              <div className="text-center py-10">
+                <p className="text-gray-500">没有找到匹配的PH新闻</p>
               </div>
             )}
           </TabsContent>
